@@ -1,0 +1,33 @@
+% Example LaTeX document for GP111 - note % sign indicates a comment
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% Default margins are too wide all the way around. I reset them here
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\begin{document}
+\title{CSC 201 Homework 1}
+\author{Brian Bell\\
+}
+\renewcommand{\today}{February 8, 2009}
+\maketitle
+
+\section*{Problem 1}
+\begin{enumerate}
+\item square: $\mathbb{R} \rightarrow \mathbb{R}$.
+\item absolute : $\mathbb{R} \rightarrow \mathbb{R}$.
+\item ``+'': $\mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$.
+\item ``-'': $\mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$.
+\item ``*'': $\mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$.
+\item ``/'': $\mathbb{R} \times \mathbb{R'} \rightarrow \mathbb{R}$.
+  
+\end{enumerate}
+
+\section*{Problem 2}
+\begin{enumerate}
+\item The signature of iterate is $\textrm{iterate} : (f:A \rightarrow A) \times \mathbb{N} \rightarrow A.$
+\item The signature of curry(iterate is $\textrm{curry(iterate)} : (f: A \rightarrow A) \rightarrow (\mathbb{N} \rightarrow A).$
+\end{enumerate}
+\end{document}

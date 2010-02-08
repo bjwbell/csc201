@@ -1,0 +1,47 @@
+% Example LaTeX document for GP111 - note % sign indicates a comment
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% Default margins are too wide all the way around. I reset them here
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\begin{document}
+\title{CSC 201 Homework 1}
+\author{Brian Bell\\
+}
+\renewcommand{\today}{February 8, 2009}
+\maketitle
+
+\section*{Problem 1}
+\begin{enumerate}
+\item square: $\mathbb{R} \rightarrow \mathbb{R}$.
+\item absolute : $\mathbb{R} \rightarrow \mathbb{R}$.
+\item ``+'': $\mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$.
+\item ``-'': $\mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$.
+\item ``*'': $\mathbb{R} \times \mathbb{R} \rightarrow \mathbb{R}$.
+\item ``/'': $\mathbb{R} \times \mathbb{R'} \rightarrow \mathbb{R}$.
+  
+\end{enumerate}
+
+\section*{Problem 2}
+\begin{enumerate}
+\item The signature of iterate is $(f:A \rightarrow A) \times \mathbb{N} \rightarrow A.$
+\item The signature of curry(iterate) is $(f: A \rightarrow A) \rightarrow (\mathbb{N} \rightarrow A).$
+\end{enumerate}
+\section*{Problem 3}
+\begin{description}
+\item[(a)] Right associativity
+\item[(b)] See attached hand-drawn tree
+\item[(c)] Change expression and term to \newline \newline
+\begin{center}
+<expression> ::= <term> | <term> + <expression-minus>
+<expression-minus> ::= <term> | <term> - <expression-minus>
+<term> ::= <term-divide> | <term-divide> * <term>
+<term-divide> ::= <factor> | <factor> * <term-divide>
+\end{center}
+\item[(d)] I enforced right associativity and also ``-'' has higher precedence than ``+'' and ``/'' has higher precendence than ``*''.
+\item[(e)] Yes the associativity is the correct one as commonly understood for mathematical expressions.
+\end{description}
+\end{document}

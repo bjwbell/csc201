@@ -36,10 +36,12 @@
 \item[(b)] See attached hand-drawn tree
 \item[(c)] Change expression and term to \newline \newline
 \begin{center}
+\begin{verbatim}
 <expression> ::= <term> | <term> + <expression-minus>
 <expression-minus> ::= <term> | <term> - <expression-minus>
 <term> ::= <term-divide> | <term-divide> * <term>
 <term-divide> ::= <factor> | <factor> * <term-divide>
+\end{verbatim}
 \end{center}
 \item[(d)] I enforced right associativity and also ``-'' has higher precedence than ``+'' and ``/'' has higher precendence than ``*''.
 \item[(e)] Yes the associativity is the correct one as commonly understood for mathematical expressions.

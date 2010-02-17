@@ -1,0 +1,26 @@
+% Example LaTeX document for GP111 - note % sign indicates a comment
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% Default margins are too wide all the way around. I reset them here
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\begin{document}
+\title{CSC 201 Homework 2}
+\author{Brian Bell\\
+}
+\renewcommand{\today}{February 17, 2009}
+\maketitle
+
+\section*{Problem 1}
+\begin{description}
+\item[(a)] $(\lambda y. \underline{\lambda x. x (y)}) (x) \rightarrow_{\alpha-conversion} (\underline{\lambda y.\lambda z. z (y)) (x)} \rightarrow_{\beta-conversion} \lambda z. z (x).$
+\item[(b)]
+
+  
+\end{description}
+
+\section*{Problem 2}
+\end{document}

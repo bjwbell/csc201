@@ -1,0 +1,36 @@
+% Example LaTeX document for GP111 - note % sign indicates a comment
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% Default margins are too wide all the way around. I reset them here
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\begin{document}
+\title{CSC 201 Homework 2}
+\author{Brian Bell\\
+}
+\renewcommand{\today}{February 17, 2009}
+\maketitle
+
+\section*{Problem 1}
+\begin{description}
+\item[(a)] $(\lambda y. \underline{\lambda x. x (y)}) (x) \rightarrow_{\alpha\text{-conversion}} \underline{(\lambda y.\lambda z. z (y)) (x)} \rightarrow_{\beta\text{-conversion}} \lambda z. z (x).$
+\item[(b)] $(\lambda x . \underline{\lambda y . x (\lambda x. x (y))}) (\lambda x. \lambda y. y(x)) \rightarrow_{\alpha\text{-conversion}} \underline{(\lambda x . \lambda z . x (\lambda x. x (z))) (\lambda x. \lambda y. y(x))} \rightarrow_{\beta\text{-conversion}}
+(\lambda z . \underline{\lambda x. \lambda y. y(x) (\lambda x. x (z))}) \rightarrow_{\beta\text{-conversion}} 
+\lambda z. \lambda y. y(\lambda x. x (z)).$
+
+\item[(c)] $\underline{(\lambda w. (\lambda w. w(y)) w)(\lambda z.\lambda y. z (y))} \rightarrow_{\beta\text{-conversion}} 
+(\lambda w. w(y)) (\lambda z. \underline{\lambda y. z(y)}) \rightarrow_{\alpha\text{-conversion}} $\newline
+$\underline{(\lambda w. w(y)) (\lambda z. \lambda x. z(x))} \rightarrow_{\beta\text{-conversion}}
+\underline{(\lambda z. \lambda x. z(x)) (y)} \rightarrow_{\beta\text{-conversion}}
+\lambda x. y(x)$
+
+  
+\end{description}
+
+\section*{Problem 2}
+
+$$\underline{(\underline{(\lambda a. \lambda b. \underline{(\lambda g. g (\lambda x. x (a)))(b)})(y)})(\lambda c. \lambda y. c(y))}$$
+\end{document}

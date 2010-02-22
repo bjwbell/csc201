@@ -1,0 +1,17 @@
+val x = 5 + 8;
+val str = "test";
+val str2 = "ing";
+val str3 = [1,2,3] @ [4,5,6];
+print ((Int.fmt StringCvt.DEC x) ^ "\n");
+x;
+
+datatype qtree = Empty | QTree of int * qtree * qtree * qtree * qtree
+
+val leaf1 = QTree(1, Empty, Empty, Empty, Empty);
+val leaf2 = QTree(2, Empty, Empty, Empty, Empty);
+val leaf3 = QTree(3, Empty, Empty, Empty, Empty);
+val leaf4 = QTree(4, Empty, Empty, Empty, Empty);
+
+val level1node1 = QTree(5, leaf1, Empty, leaf2, Empty);
+val level2 = QTree(6, Empty, leaf3, Empty, leaf4);
+val qtree15 = QTree(7

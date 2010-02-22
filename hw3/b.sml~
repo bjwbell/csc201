@@ -1,0 +1,17 @@
+(* part A *)
+
+datatype expression = Term of term | TermExpression of term * expression
+datatype term = Id of identifier | TermId of term * identifier
+datatype identifier = a | b | c
+
+
+(* part B *)
+
+val ida = a;
+val idb = b;
+val idc = c;
+
+val a_times_b = TermId(Id(ida), idb);
+val b_times_c = TermId(Id(idb), idc);
+val a_times_b_plus_c = TermExpression(Term(a_times_b), Id(idc));
+val a_times_b_plus_c_plus_b_times_c = TermExpression(a_times_b_plus_c, Term(b_times_c));

@@ -1,0 +1,40 @@
+bjwbell@server:~/tmp/csc201/hw3$ sml < hw3.sml
+Standard ML of New Jersey v110.69 [built: Mon Jun  8 23:24:21 2009]
+- datatype qtree = Empty | QTree of int * qtree * qtree * qtree * qtree
+val qtree1 = QTree (1,Empty,Empty,Empty,Empty) : qtree
+val qtree2 = QTree (2,Empty,Empty,Empty,Empty) : qtree
+val qtree3 = QTree (3,Empty,Empty,Empty,Empty) : qtree
+val qtree4 = QTree (4,Empty,Empty,Empty,Empty) : qtree
+val level1 =
+  QTree
+    (5,QTree (1,Empty,Empty,Empty,Empty),Empty,
+     QTree (2,Empty,Empty,Empty,Empty),Empty) : qtree
+val level2 =
+  QTree
+    (6,Empty,QTree (3,Empty,Empty,Empty,Empty),Empty,
+     QTree (4,Empty,Empty,Empty,Empty)) : qtree
+val level3 =
+  QTree
+    (7,QTree (1,Empty,Empty,Empty,Empty),QTree (2,Empty,Empty,Empty,Empty),
+     QTree (5,QTree #,Empty,QTree #,Empty),
+     QTree (6,Empty,QTree #,Empty,QTree #)) : qtree
+val tree =
+  QTree
+    (8,QTree (5,QTree #,Empty,QTree #,Empty),
+     QTree (6,Empty,QTree #,Empty,QTree #),
+     QTree (7,QTree #,QTree #,QTree #,QTree #),Empty) : qtree
+val countqnodes = fn : qtree -> int
+val it = 16 : int
+datatype identifier = a | b | c
+datatype term = Id of identifier | TermId of term * identifier
+datatype expression = Term of term | TermExpression of expression * term
+val ida = a : identifier
+val idb = b : identifier
+val idc = c : identifier
+val a_times_b = TermId (Id a,b) : term
+val b_times_c = TermId (Id b,c) : term
+val a_times_b_plus_c = TermExpression (Term (TermId (#,#)),Id c) : expression
+val a_times_b_plus_c_plus_b_times_c =
+  TermExpression (TermExpression (Term #,Id #),TermId (Id #,c)) : expression
+- 
+bjwbell@server:~/tmp/csc201/hw3$ 

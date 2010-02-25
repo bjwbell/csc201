@@ -1,4 +1,5 @@
-(* part A *)
+
+(* 2A *)
 
 
 datatype identifier = a | b | c
@@ -6,7 +7,7 @@ datatype term = Id of identifier | TermId of term * identifier
 datatype expression = Term of term | TermExpression of expression * term
 
 
-(* part B *)
+(* 2B *)
 
 val ida = a;
 val idb = b;

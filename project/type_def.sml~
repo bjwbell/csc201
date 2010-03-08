@@ -1,0 +1,18 @@
+datatype variable = string_v of string;
+type integer_constant = int;
+type boolean_constant = bool;
+datatype arithmetic_op = plus | minus | times | divide;
+datatype relational_op = eq | lt | le | gt | ge | ne;
+datatype boolean_op = And | Or;
+datatype constant = int_const of integer_constant | bool_const of boolean_constant;
+datatype int_expression = cons of constant| var of variable |
+bin of (int_expression*int_expression*arithmetic_op);
+datatype bool_expression = consb of constant| varb of variable |
+bin1 of (bool_expression*bool_expression*relational_op) |
+bin2 of (bool_expression*bool_expression*boolean_op);
+datatype expression = int_express of int_expression | bool_express of bool_expression;
+datatype instruction = skip | assign of variable*expression | compound of instruction list | conditional of instruction*instruction*expression | loop of (instruction*expression);
+datatype Type = boolean_type | integer_type;
+type declaration = variable*Type;
+type declaration_list = declaration list;
+type program = declaration_list*instruction;

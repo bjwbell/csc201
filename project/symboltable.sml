@@ -66,7 +66,8 @@ fun TypeToTypeValue(Boolean) = Ibool | TypeToTypeValue(Integer) = Iint;
 type typemap = variable -> isymbol;
  
 fun TypeMap(nil : declaration_list) = (fn v => Iud) |
-    TypeMap((x, t) :: tail) = (fn v => if v = x then TypeToTypeValue(t) else TypeMap(tail)(v));
+    TypeMap((x, t) :: tail) = (fn v => if v = x then TypeToTypeValue(t) else 
+				       TypeMap(tail)(v));
  
 (* code to test TypeMap function *) 
 val map = TypeMap(decl_list);
@@ -78,22 +79,26 @@ map(Variable("bad_var"));
 (* VDeclList function to validate a declaration list *)
 
 fun ValInHeadNotInTail(var : variable, [] : declaration_list) = true |
-    ValInHeadNotInTail(var : variable, ((y, t) :: tail) : declaration_list) = (var <> y) andalso ValInHeadNotInTail(var, tail); 
+    ValInHeadNotInTail(var : variable, ((y, t) :: tail) : declaration_list) = 
+    (var <> y) andalso ValInHeadNotInTail(var, tail); 
 
 fun VDeclList([] : declaration_list) = true | 
-    VDeclList( (var, t) :: tail : declaration_list) = ValInHeadNotInTail(var, tail) andalso VDeclList(tail);
+    VDeclList( (var, t) :: tail : declaration_list) = 
+    ValInHeadNotInTail(var, tail) andalso VDeclList(tail);
 
 (* code to test VDeclList with a list that has duplicates *)
 
 VDeclList([]);
 VDeclList([(Variable("a"), Boolean), (Variable("b"), Boolean)]);
-VDeclList([(Variable("a"), Boolean), (Variable("b"), Boolean), (Variable("a"), Boolean)]);
+VDeclList([(Variable("a"), Boolean), (Variable("b"), Boolean), 
+	   (Variable("a"), Boolean)]);
 
 (* VIntExpression *)
 
 fun VIntExpression(Cons_Int(_), _ : typemap) = true |
-    VIntExpression(Var_Int(x : variable), map : typemap) = map(x) <> Iud |
-    VIntExpression(Binary_Int(expr1, expr2, arith_op), map : typemap) = VIntExpression(expr1, map) andalso VIntExpression(expr2, map);
+    VIntExpression(Var_Int(x : variable), map : typemap) = map(x) = Iint |
+    VIntExpression(Binary_Int(expr1, expr2, arith_op), map : typemap) = 
+    VIntExpression(expr1, map) andalso VIntExpression(expr2, map);
 
 (* code to test VIntExpression *)
 VIntExpression(Cons_Int(5), map);
@@ -103,11 +108,11 @@ VIntExpression(Var_Int(Variable("number1")), map);
 
 (* VBoolExpression *)
 fun VBoolExpression(Cons_Bool(_), _ : typemap) = true |
-    VBoolExpression(Var_Bool(x : variable), map : typemap) = map(x) <> Iud |
-    VBoolExpression(Binary_Bool1(expr1, expr2, rel_op), map : typemap) = VIntExpression(expr1, map) 
-									 andalso VIntExpression(expr2, map) |
-    VBoolExpression(Binary_Bool2(expr1, expr2, bool_op), map : typemap) = VBoolExpression(expr1, map) 
-									  andalso VBoolExpression(expr2, map);
+    VBoolExpression(Var_Bool(x : variable), map : typemap) = map(x) = Ibool |
+    VBoolExpression(Binary_Bool1(expr1, expr2, rel_op), map : typemap) = 
+    VIntExpression(expr1, map) andalso VIntExpression(expr2, map) |
+    VBoolExpression(Binary_Bool2(expr1, expr2, bool_op), map : typemap) = 
+    VBoolExpression(expr1, map) andalso VBoolExpression(expr2, map);
 
 (* code to test VBoolExpression *)
 VBoolExpression(Cons_Bool(true), map);
@@ -118,15 +123,22 @@ VBoolExpression(Var_Bool(Variable("x")), map);
 fun VExpression(Int_Expr(expr), map : typemap) = VIntExpression(expr, map) |
     VExpression(Bool_Expr(expr), map : typemap) = VBoolExpression(expr, map);
 
-(* we don't need to test VExpression since it merely delegates to VIntExpression and VBoolExpression *)
+(* we don't need to test VExpression since it merely delegates to 
+      VIntExpression and VBoolExpression *)
 
 fun VInstruction(Skip, _ : typemap) = true |
-    VInstruction(Assign(x, expr), map : typemap) = map(x) <> Iud andalso VExpression(expr, map) |
+    VInstruction(Assign(x, Int_Expr(exp)), map : typemap) = 
+    map(x) = Iint andalso VIntExpression(exp, map) |
+    VInstruction(Assign(x, Bool_Expr(exp)), map : typemap) = 
+    map(x) = Ibool andalso VBoolExpression(exp, map) |
     VInstruction(Compound([]), map : typemap) = true |
-    VInstruction(Compound(instr :: tail), map : typemap) = VInstruction(instr, map) andalso VInstruction(Compound(tail), map) |
-    VInstruction(Conditional(instr1, instr2, bool_expr), map : typemap) = VInstruction(instr1, map) andalso 
-									  VInstruction(instr2, map) andalso VBoolExpression(bool_expr, map)  |
-    VInstruction(Loop(instr, bool_expr), map : typemap) = VInstruction(instr, map) andalso VBoolExpression(bool_expr, map);
+    VInstruction(Compound(instr :: tail), map : typemap) = 
+    VInstruction(instr, map) andalso VInstruction(Compound(tail), map) |
+    VInstruction(Conditional(instr1, instr2, bool_expr), map : typemap) = 
+    VInstruction(instr1, map) andalso VInstruction(instr2, map) andalso 
+    VBoolExpression(bool_expr, map)  |
+    VInstruction(Loop(instr, bool_expr), map : typemap) = 
+    VInstruction(instr, map) andalso VBoolExpression(bool_expr, map);
 
 (* code to test VInstruction *)
 (* Empty *)

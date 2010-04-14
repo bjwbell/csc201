@@ -286,9 +286,30 @@ val MExpression = fn Int_Expr(iexpr : int_expression) => (fn (ps: programstate) 
 		      Bool_Expr(bexpr : bool_expression) => (fn (ps: programstate) => MBoolExpression(bexpr)(ps));
      
 
+exception BadInstruction;
 
-
-val MInstruction = fn Skip => (fn (ps : programstate) => ps) |
-		      Assign (v : variable, e : expression) => (fn (ps : programstate) => ProgramStateChange(ps)(v)(MExpression(e)(ps))) |
-		      Compound ([]) => (fn (ps : programstate) => ps) |
-		      Compound (x : xs) => (fn (ps : programstate) => 
+val rec MInstruction = fn Skip => (fn (ps : programstate) => ps) |
+			  Assign (v : variable, e : expression) => (fn (ps : programstate) => ProgramStateChange(ps)(v)(MExpression(e)(ps))) |
+			  Compound ([]) => (fn (ps : programstate) => ps) |
+			  Compound (x :: xs) => (fn (ps : programstate) => MInstruction(Compound(xs))(MInstruction(x)(ps)))|
+			  Conditional (truebranch, falsebranch, test) => (fn (ps : programstate) =>  
+									     let val test_result = MBoolExpression(test)(ps)
+									     in
+										 case test_result of 
+										     ValBool(true) => MInstruction(truebranch)(ps) |
+										     ValBool(false) => MInstruction(falsebranch)(ps) |
+										     _ => raise BadInstruction
+												
+									     end
+									 ) |
+			  Loop (loop_instruction, test) => (fn (ps : programstate) => 
+							       let val newProgramState = MInstruction(loop_instruction)(ps)
+							       in
+								   if MBoolExpression(test)(newProgramState) = ValBool(true) then
+								       newProgramState
+								   else
+								       MInstruction(Loop(loop_instruction, test))(newProgramState)
+							       end
+							   );
+			  
+					   

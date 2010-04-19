@@ -245,6 +245,15 @@ print "initialProgramState tests, they should all be false\n";
 initialProgramState(Variable("var1"));
 initialProgramState(Variable("var2"));
 
+(* testing ProgramStateChange *)
+val newProgramState = ProgramStateChange(initialProgramState)(Variable("var"))(ValInt(1));
+print "testing ProgramStateChange\n";
+newProgramState(Variable("var")) = ValInt(1);
+val nps2 = ProgramStateChange(newProgramState)(Variable("var2"))(ValBool(true));
+nps2(Variable("var2")) = ValBool(true);
+nps2(Variable("var")) = ValInt(1);
+nps2(Variable("var3")) = Unknown;
+
 (* step 5 *)
 exception BadArithmeticOperation;
 

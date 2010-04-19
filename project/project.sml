@@ -225,4 +225,91 @@ val bool1_decl = (Variable("bool1"), Boolean);
 val bool11_decl = (Variable("bool1"), Integer);
 val bad_decl_list = [bool2_decl, bool11_decl];
 val bad_prog : program = (bad_decl_list, instructions);
-VProgram(bad_prog);
+(*VProgram(bad_prog);*)
+
+
+(* step 1 *)
+datatype value = ValInt of int | ValBool of bool | Unknown;
+
+(* step 2 *)
+type programstate = variable -> value;
+
+(* step 3 *)
+(*fn v => if v = x then TypeToTypeValue(t) else TypeMap(tail)(v)*)
+
+val ProgramStateChange = (fn (ps : programstate) => (fn (v : variable) => (fn (va : value) => (fn (u : variable) => if u = v then va else ps(u)))));
+
+
+(* step 4 *)
+val intialProgramState = (fn (_ : value) => Unknown);
+
+(* step 5 *)
+exception BadArithmeticOperation;
+
+fun AOPCalculation(ValInt(int1), Plus, ValInt(int2)) = ValInt(int1 + int2)
+| AOPCalculation(ValInt(int1), Minus, ValInt(int2)) = ValInt(int1 - int2)
+| AOPCalculation(ValInt(int1), Times, ValInt(int2)) = ValInt(int1 * int2)
+| AOPCalculation(ValInt(int1), Divide, ValInt(int2)) = ValInt(int1 div int2)
+| AOPCalculation(_, _, _) = raise BadArithmeticOperation;
+
+exception BadRelationalOperation;
+
+fun ROPCalculation(ValInt(int1), eq, ValInt(int2)) = ValBool(int1 = int2)
+| ROPCalculation(ValInt(int1), lt, ValInt(int2)) = ValBool(int1 < int2)
+| ROPCalculation(ValInt(int1), le, ValInt(int2)) = ValBool(int1 <= int2)
+| ROPCalculation(ValInt(int1), gt, ValInt(int2)) = ValBool(int1 > int2)
+| ROPCalculation(ValInt(int1), ge, ValInt(int2)) = ValBool(int1 >= int2)
+| ROPCalculation(ValInt(int1), ne, ValInt(int2)) = ValBool(not (int1 = int2))
+| ROPCalculation(_, _, _) = raise BadRelationalOperation;
+
+
+exception BadBooleanOperation;
+
+fun BOPCalculation(ValBool(b1), And, ValBool(b2)) = ValBool(b1 andalso b2)
+| BOPCalculation(ValBool(b1), Or, ValBool(b2)) = ValBool(b1 orelse b2)
+| BOPCalculation(_, _, _) = raise BadRelationalOperation;
+
+
+val rec MIntExpression = fn (Cons_Int(num)) => (fn (ps: programstate) => ValInt(num))
+			   | (Var_Int(v : variable)) => (fn (ps : programstate) => ps(v)) 
+			   | (Binary_Int(exp1, exp2, aop)) => (fn (ps : programstate) => AOPCalculation(MIntExpression(exp1)(ps), aop, MIntExpression(exp2)(ps)));
+
+
+
+val rec MBoolExpression = fn Cons_Bool(b1) => (fn (ps: programstate) => ValBool(b1) )
+		           | Var_Bool(vbool : variable) => (fn (ps: programstate) => ps(vbool) )
+			   | Binary_Bool1(iexp1, iexp2, rop) => (fn (ps: programstate) => ROPCalculation(MIntExpression(iexp1)(ps), rop, MIntExpression(iexp2)(ps)))
+			   | Binary_Bool2(bexp1, bexp2, bop) => (fn (ps: programstate) => BOPCalculation(MBoolExpression(bexp1)(ps), bop, MBoolExpression(bexp2)(ps)));
+
+
+val MExpression = fn Int_Expr(iexpr : int_expression) => (fn (ps: programstate) => MIntExpression(iexpr)(ps)) |
+		      Bool_Expr(bexpr : bool_expression) => (fn (ps: programstate) => MBoolExpression(bexpr)(ps));
+     
+
+exception BadInstruction;
+
+val rec MInstruction = fn Skip => (fn (ps : programstate) => ps) |
+			  Assign (v : variable, e : expression) => (fn (ps : programstate) => ProgramStateChange(ps)(v)(MExpression(e)(ps))) |
+			  Compound ([]) => (fn (ps : programstate) => ps) |
+			  Compound (x :: xs) => (fn (ps : programstate) => MInstruction(Compound(xs))(MInstruction(x)(ps)))|
+			  Conditional (truebranch, falsebranch, test) => (fn (ps : programstate) =>  
+									     let val test_result = MBoolExpression(test)(ps)
+									     in
+										 case test_result of 
+										     ValBool(true) => MInstruction(truebranch)(ps) |
+										     ValBool(false) => MInstruction(falsebranch)(ps) |
+										     _ => raise BadInstruction
+												
+									     end
+									 ) |
+			  Loop (loop_instruction, test) => (fn (ps : programstate) => 
+							       let val newProgramState = MInstruction(loop_instruction)(ps)
+							       in
+								   if MBoolExpression(test)(newProgramState) = ValBool(true) then
+								       newProgramState
+								   else
+								       MInstruction(Loop(loop_instruction, test))(newProgramState)
+							       end
+							   );
+			  
+					   

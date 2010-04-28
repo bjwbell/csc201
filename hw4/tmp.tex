@@ -1,0 +1,22 @@
+% Example LaTeX document for GP111 - note % sign indicates a comment
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+% Default margins are too wide all the way around. I reset them here
+\setlength{\topmargin}{-.5in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+\begin{document}
+\title{CSC 201 Homework 4}
+\author{Brian Bell\\
+}
+\renewcommand{\today}{April 28, 2009}
+\maketitle
+\section*{Problem 1}
+\begin{description} 
+\item $\{M1\wedge A\}$ while C1 do $\{C1\wedge A\}$ (...) $\{A\wedge \!C1\wedge M2\}$
+\item $\{C1\wedge A\}$ if C2 then $\{C1\wedge C2\wedge A\}$ (...) else $\{C1\wedge A\wedge \!C2\}$ L2 $\{A\}$
+\item $\{C1\wedge C2\wedge A\}$ (while C3 do $\{C1\wedge C2\wedge A\wedge C3\}$ L1) $\{A\wedge \!C3\}$
+\end{description}
+\end{document}

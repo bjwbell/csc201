@@ -1,0 +1,340 @@
+Standard ML of New Jersey v110.69 [built: Mon Jun  8 23:24:21 2009]
+- datatype variable = Variable of string
+type integer_constant = int
+type boolean_constant = bool
+datatype arithmetic_op = Divide | Minus | Plus | Times
+datatype relational_op = eq | ge | gt | le | lt | ne
+datatype boolean_op = And | Or
+datatype int_expression
+  = Binary_Int of int_expression * int_expression * arithmetic_op
+  | Cons_Int of int
+  | Var_Int of variable
+datatype bool_expression
+  = Binary_Bool1 of int_expression * int_expression * relational_op
+  | Binary_Bool2 of bool_expression * bool_expression * boolean_op
+  | Cons_Bool of bool
+  | Var_Bool of variable
+datatype expression
+  = Bool_Expr of bool_expression | Int_Expr of int_expression
+datatype instruction
+  = Assign of variable * expression
+  | Compound of instruction list
+  | Conditional of instruction * instruction * bool_expression
+  | Loop of instruction * bool_expression
+  | Skip
+datatype graal_type = Boolean | Integer
+type declaration = variable * graal_type
+type declaration_list = declaration list
+type program = declaration_list * instruction
+val number1 = Variable "number1" : variable
+val number2 = Variable "number2" : variable
+val t = Variable "t" : variable
+val num10 = Cons_Int 10 : int_expression
+val num0 = Cons_Int 0 : int_expression
+val num1234567 = Cons_Int 1234567 : int_expression
+val number1_decl = (Variable "number1",Integer) : variable * graal_type
+val number2_decl = (Variable "number2",Integer) : variable * graal_type
+val t_decl = (Variable "t",Integer) : variable * graal_type
+val decl_list =
+  [(Variable "t",Integer),(Variable "number2",Integer),
+   (Variable "number1",Integer)] : declaration_list
+val number1_assign = Assign (Variable "number1",Int_Expr (Cons_Int 1234567))
+  : instruction
+val number2_assign = Assign (Variable "number2",Int_Expr (Cons_Int 0))
+  : instruction
+val t_eq_number1 = Assign (Variable "t",Int_Expr (Var_Int (Variable #)))
+  : instruction
+val number1_div_10 =
+  Binary_Int (Var_Int (Variable "number1"),Cons_Int 10,Divide)
+  : int_expression
+val number1_eq_number1_div_10 =
+  Assign (Variable "number1",Int_Expr (Binary_Int (#,#,#))) : instruction
+val expr1 = Binary_Int (Var_Int (Variable "number2"),Cons_Int 10,Times)
+  : int_expression
+val expr2 = Binary_Int (Var_Int (Variable "number1"),Cons_Int 10,Times)
+  : int_expression
+val expr3 =
+  Binary_Int
+    (Var_Int (Variable "t"),Binary_Int (Var_Int #,Cons_Int #,Times),Minus)
+  : int_expression
+val expr =
+  Binary_Int
+    (Binary_Int (Var_Int #,Cons_Int #,Times),
+     Binary_Int (Var_Int #,Binary_Int #,Minus),Plus) : int_expression
+val number2_assign_expr =
+  Assign (Variable "number2",Int_Expr (Binary_Int (#,#,#))) : instruction
+val loop_instructions =
+  [Assign (Variable "t",Int_Expr (Var_Int #)),
+   Assign (Variable "number1",Int_Expr (Binary_Int #)),
+   Assign (Variable "number2",Int_Expr (Binary_Int #))] : instruction list
+val test_cond = Assign (Variable "number2",Int_Expr (Cons_Int 54))
+  : instruction
+val repeat_loop =
+  Loop
+    (Compound [Assign #,Assign #,Assign #],
+     Binary_Bool1 (Var_Int #,Cons_Int #,lt)) : instruction
+val conditional =
+  Conditional
+    (Loop (Compound #,Binary_Bool1 #),Skip,
+     Binary_Bool1 (Var_Int #,Cons_Int #,ge)) : instruction
+val instructions =
+  Compound
+    [Assign (Variable #,Int_Expr #),Assign (Variable #,Int_Expr #),
+     Conditional (Loop #,Skip,Binary_Bool1 #)] : instruction
+val prog =
+  ([(Variable "t",Integer),(Variable "number2",Integer),
+    (Variable "number1",Integer)],
+   Compound [Assign (#,#),Assign (#,#),Conditional (#,#,#)]) : program
+datatype isymbol = Ibool | Iint | Iud
+val TypeToTypeValue = fn : graal_type -> isymbol
+type typemap = variable -> isymbol
+stdIn:66.45 Warning: calling polyEqual
+val TypeMap = fn : (''a * graal_type) list -> ''a -> isymbol
+val map = fn : variable -> isymbol
+val it = Iint : isymbol
+val it = Iint : isymbol
+val it = Iud : isymbol
+stdIn:79.10-79.12 Warning: calling polyEqual
+val ValInHeadNotInTail = fn : variable * declaration_list -> bool
+val VDeclList = fn : declaration_list -> bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val VIntExpression = fn : int_expression * typemap -> bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val VBoolExpression = fn : bool_expression * typemap -> bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val bool1_decl = (Variable "bool1",Boolean) : variable * graal_type
+val bool2_decl = (Variable "bool2",Boolean) : variable * graal_type
+val bool_decl_list = [(Variable "bool2",Boolean),(Variable "bool1",Boolean)]
+  : declaration_list
+val map2 = fn : variable -> isymbol
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val VExpression = fn : expression * typemap -> bool
+val VInstruction = fn : instruction * typemap -> bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+val it = false : bool
+exception BadDeclationList
+val VProgram = fn : declaration_list * instruction -> bool
+val it = true : bool
+val bool1_decl = (Variable "bool1",Boolean) : variable * graal_type
+val bool11_decl = (Variable "bool1",Integer) : variable * graal_type
+val bad_decl_list = [(Variable "bool2",Boolean),(Variable "bool1",Integer)]
+  : (variable * graal_type) list
+val bad_prog =
+  ([(Variable "bool2",Boolean),(Variable "bool1",Integer)],
+   Compound [Assign (#,#),Assign (#,#),Conditional (#,#,#)]) : program
+datatype value = Unknown | ValBool of bool | ValInt of int
+type programstate = variable -> value
+stdIn:238.122 Warning: calling polyEqual
+val ProgramStateChange = fn
+  : programstate -> variable -> value -> variable -> value
+val initialProgramState = fn : variable -> value
+initialProgramState tests, they should all be false
+val it = () : unit
+val it = Unknown : value
+val it = Unknown : value
+val newProgramState = fn : variable -> value
+testing ProgramStateChange
+val it = () : unit
+val it = true : bool
+val nps2 = fn : variable -> value
+val it = true : bool
+val it = true : bool
+val it = true : bool
+exception BadArithmeticOperation
+val AOPCalculation = fn : value * arithmetic_op * value -> value
+AOPCalculation, good cases
+val it = () : unit
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+AOPCalculation, bad cases
+val it = () : unit
+val it = ValBool false : value
+val it = ValBool false : value
+val it = ValBool false : value
+exception BadRelationalOperation
+val ROPCalculation = fn : value * relational_op * value -> value
+ROPCalculation, good cases
+val it = () : unit
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+ROPCalculation, bad cases
+val it = () : unit
+val it = ValBool false : value
+val it = ValBool false : value
+val it = ValBool false : value
+exception BadBooleanOperation
+val BOPCalculation = fn : value * boolean_op * value -> value
+BOPCalculation, good cases
+val it = () : unit
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+BOPCalculation, bad cases
+val it = () : unit
+val it = ValBool false : value
+val it = ValBool false : value
+val it = ValBool false : value
+val MIntExpression = fn : int_expression -> programstate -> value
+MIntExpression, good cases
+val it = () : unit
+val it = true : bool
+val it = true : bool
+val ps2 = fn : variable -> value
+val it = true : bool
+val it = true : bool
+val it = true : bool
+MIntExpression, bad cases
+val it = () : unit
+val it = ValBool false : value
+val it = Unknown : value
+val MBoolExpression = fn : bool_expression -> programstate -> value
+MBoolExpression, good cases 
+val it = () : unit
+val ps3 = fn : variable -> value
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+val it = true : bool
+MBoolExpression, bad cases 
+val it = () : unit
+val it = false : bool
+val it = ValBool false : value
+val it = ValBool false : value
+val MExpression = fn : expression -> programstate -> value
+exception BadInstruction
+val MInstruction = fn : instruction -> programstate -> programstate
+MInstruction good cases
+val it = () : unit
+Skip
+val it = () : unit
+val it = fn : programstate
+Assign
+val it = () : unit
+val ps4 = fn : programstate
+val it = true : bool
+val it = true : bool
+val ps5 = fn : programstate
+val it = true : bool
+val it = true : bool
+val it = true : bool
+Compound
+val it = () : unit
+val psc1 = fn : programstate
+val it = true : bool
+val it = true : bool
+val assn = Assign (Variable "num2",Int_Expr (Cons_Int 1)) : instruction
+val comp = Compound [Assign (Variable #,Int_Expr #)] : instruction
+val psc2 = fn : programstate
+val it = true : bool
+val it = true : bool
+val it = true : bool
+Conditional tests
+val it = () : unit
+val truebranch1 = Assign (Variable "num2",Int_Expr (Cons_Int 1)) : instruction
+val falsebranch1 = Assign (Variable "num2",Int_Expr (Cons_Int 0))
+  : instruction
+val test1 = Cons_Bool true : bool_expression
+val cond1 =
+  Conditional
+    (Assign (Variable #,Int_Expr #),Assign (Variable #,Int_Expr #),
+     Cons_Bool true) : instruction
+val pscond1 = fn : programstate
+val it = true : bool
+val test2 = Var_Bool (Variable "b") : bool_expression
+val pstmp = fn : programstate
+val pscond2 = fn : programstate
+val it = true : bool
+Loop tests
+val it = () : unit
+val loopps = fn : programstate
+val loopInstruction =
+  Assign (Variable "loopvar",Int_Expr (Binary_Int (#,#,#))) : instruction
+val loopTest = Binary_Bool1 (Var_Int (Variable "loopvar"),Cons_Int 10,eq)
+  : bool_expression
+val loopps2 = fn : programstate
+val it = true : bool
+exception BadProgramException
+val MProgram = fn : program -> programstate
+val finalState = fn : programstate
+finalState number1:val it = () : unit
+val it = ValInt 0 : value
+
+val it = () : unit
+finalState number2:val it = () : unit
+val it = ValInt 7654321 : value
+finalState t:val it = () : unit
+val it = ValInt 1 : value
+
+finalState bad_var:val it = () : unit
+val it = Unknown : value
+- 
